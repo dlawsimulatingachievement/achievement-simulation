@@ -42,20 +42,25 @@ attempts_2 = st.slider("Choose the Second Number of Attempts (1-50):", min_value
 attempts_3 = st.slider("Choose the Third Number of Attempts (1-50):", min_value=1, max_value=50, value=30)
 
 # Simulation Function
-def simulate_user_multiple_times(talent, effort, attempts, num_simulations, weight_talent, weight_effort, weight_luck):
+
+def simulate_user_multiple_times_chunked(talent, effort, attempts, total_simulations, chunk_size, weight_talent, weight_effort, weight_luck):
     results = []
-    for _ in range(num_simulations):
-        grand_achievement = 0
-        for _ in range(attempts):
-            luck = truncated_normal(mean=5.0, std_dev=2, size=1, min_val=0, max_val=10)[0]
-            achievement = (talent ** weight_talent) * (effort ** weight_effort) * (luck ** weight_luck)
-            grand_achievement += achievement
-        results.append(grand_achievement)
+    for _ in range(total_simulations // chunk_size):
+        chunk_results = []
+        for _ in range(chunk_size):
+            grand_achievement = 0
+            for _ in range(attempts):
+                luck = truncated_normal(mean=5.0, std_dev=2, size=1, min_val=0, max_val=10)[0]
+                achievement = (talent ** weight_talent) * (effort ** weight_effort) * (luck ** weight_luck)
+                grand_achievement += achievement
+            chunk_results.append(grand_achievement)
+        results.extend(chunk_results)
     return np.array(results)
 
 # Run Simulation
 if st.button("Run Simulation"):
     num_simulations = 100000  # Fixed number of simulations
+    chunk_size = 10000  # Break the simulations into chunks
     population_size = 10000  # Fixed population size
 
     # Generate Population Data for Comparison
@@ -63,7 +68,7 @@ if st.button("Run Simulation"):
     effort_population = truncated_normal(mean=5.0, std_dev=2, size=population_size, min_val=0, max_val=10)
 
     for attempts, attempt_label in zip([attempts_1, attempts_2, attempts_3], ["First", "Second", "Third"]):
-        user_results = simulate_user_multiple_times(user_talent, user_effort, attempts, num_simulations, weight_talent, weight_effort, weight_luck)
+        user_results = simulate_user_multiple_times_chunked(user_talent, user_effort, attempts, num_simulations, chunk_size, weight_talent, weight_effort, weight_luck)
 
         grand_achievements = []
         for _ in range(attempts):
@@ -83,3 +88,4 @@ if st.button("Run Simulation"):
         # Display Results
         st.write(f"### Results for {attempt_label} Number of Attempts ({attempts} Attempts):")
         st.write(f"Likelihood of being in the Top {percentile}%: {probability:.2f}%")
+
