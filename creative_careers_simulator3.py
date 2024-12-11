@@ -32,10 +32,10 @@ with st.expander("Adjust Weights for Talent, Effort, and Luck (Optional)"):
         st.error("The weights must sum to 1. Please adjust them accordingly.")
 
 # Target Percentile Slider
-st.header("Likelihood of Being in the Top X%")
+st.header("Top X% Requirement")
 percentile = st.slider("Choose the Percentile to Check (1-99):", min_value=1, max_value=99, value=10)
 
-st.header("Your Number of Attempts")
+st.header("Number of Attempts to be Made")
 # Number of Attempts Sliders
 attempts_1 = st.slider("Choose the First Number of Attempts (1-50):", min_value=1, max_value=50, value=10)
 attempts_2 = st.slider("Choose the Second Number of Attempts (1-50):", min_value=1, max_value=50, value=20)
