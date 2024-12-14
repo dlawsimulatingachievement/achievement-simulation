@@ -31,9 +31,9 @@ with st.expander("Adjust Weights for Talent, Effort, and Luck (Optional)"):
     if not np.isclose(weight_talent + weight_effort + weight_luck, 1.0):
         st.error("The weights must sum to 1. Please adjust them accordingly.")
 
-# Target Percentile Slider
-st.header("Top X% Requirement")
-percentile = st.slider("Choose the Percentile to Check (1-99):", min_value=1, max_value=99, value=10)
+# Target % Slider
+st.header("Target X% Requirement")
+percentile = st.slider("Choose the target % to check:", min_value=1, max_value=99, value=10)
 
 st.header("Number of Attempts to be Made")
 # Number of Attempts Sliders
